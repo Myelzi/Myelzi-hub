@@ -1,0 +1,193 @@
+<<<<-[window.toggleRequestStatus = async function(id, status) {
+            try {
+                try {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'miya_requests', id), { status: status });
+                } catch (e) {
+                    console.warn("Firestore status update fallback:", e);
+                }
+                const index = requestsData.findIndex(r => r.id === id);
+                if (index >= 0) requestsData[index].status = status;
+                localStorage.setItem('myelzi_requests', JSON.stringify(requestsData));
+                renderAdminRequests();
+                window.showNotice('Status request diperbarui');
+            } catch (err) {
+                console.error("Update request status error:", err);
+            }
+        };
+
+        window.deleteRequestItem = async function(id) {
+            if (confirm('Hapus item request ini?')) {
+                try {
+                    try {
+                        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'miya_requests', id));
+                    } catch (e) {
+                        console.warn("Firestore delete request fallback:", e);
+                    }
+                    requestsData = requestsData.filter(r => r.id !== id);
+                    localStorage.setItem('myelzi_requests', JSON.stringify(requestsData));
+                    renderAdminRequests();
+                    window.showNotice('Request berhasil dihapus');
+                } catch (err) {
+                    console.error("Delete request error:", err);
+                }
+            }
+        };
+
+        window.toggleReportStatus = async function(id, status) {
+            try {
+                try {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'miya_reports', id), { status: status });
+                } catch (e) {
+                    console.warn("Firestore status report fallback:", e);
+                }
+                const index = reportsData.findIndex(r => r.id === id);
+                if (index >= 0) reportsData[index].status = status;
+                localStorage.setItem('myelzi_reports', JSON.stringify(reportsData));
+                renderAdminReports();
+                window.showNotice('Status laporan diperbarui');
+            } catch (err) {
+                console.error("Update report status error:", err);
+            }
+        };
+
+        window.deleteReportItem = async function(id) {
+            if (confirm('Hapus item laporan ini?')) {
+                try {
+                    try {
+                        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'miya_reports', id));
+                    } catch (e) {
+                        console.warn("Firestore delete report fallback:", e);
+                    }
+                    reportsData = reportsData.filter(r => r.id !== id);
+                    localStorage.setItem('myelzi_reports', JSON.stringify(reportsData));
+                    renderAdminReports();
+                    window.showNotice('Laporan berhasil dihapus');
+                } catch (err) {
+                    console.error("Delete report error:", err);
+                }
+            }
+        };]----
+>>>>+[window.toggleRequestStatus = async function(id, status) {
+            const index = requestsData.findIndex(r => r.id === id);
+            if (index >= 0) {
+                requestsData[index].status = status;
+                localStorage.setItem('myelzi_requests', JSON.stringify(requestsData));
+                renderAdminRequests();
+                window.showNotice('Status request diperbarui');
+            }
+
+            try {
+                const withTimeout = (promise, ms = 1500) => Promise.race([
+                    promise,
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
+                ]);
+                await withTimeout(updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'miya_requests', id), { status: status }));
+            } catch (e) {
+                console.warn("Firestore request status sync note:", e);
+            }
+        };
+
+        window.deleteRequestItem = async function(id) {
+            if (confirm('Hapus item request ini?')) {
+                requestsData = requestsData.filter(r => r.id !== id);
+                localStorage.setItem('myelzi_requests', JSON.stringify(requestsData));
+                renderAdminRequests();
+                window.showNotice('Request berhasil dihapus');
+
+                try {
+                    const withTimeout = (promise, ms = 1500) => Promise.race([
+                        promise,
+                        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
+                    ]);
+                    await withTimeout(deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'miya_requests', id)));
+                } catch (e) {
+                    console.warn("Firestore delete request sync note:", e);
+                }
+            }
+        };
+
+        window.toggleReportStatus = async function(id, status) {
+            const index = reportsData.findIndex(r => r.id === id);
+            if (index >= 0) {
+                reportsData[index].status = status;
+                localStorage.setItem('myelzi_reports', JSON.stringify(reportsData));
+                renderAdminReports();
+                window.showNotice('Status laporan diperbarui');
+            }
+
+            try {
+                const withTimeout = (promise, ms = 1500) => Promise.race([
+                    promise,
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
+                ]);
+                await withTimeout(updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'miya_reports', id), { status: status }));
+            } catch (e) {
+                console.warn("Firestore report status sync note:", e);
+            }
+        };
+
+        window.deleteReportItem = async function(id) {
+            if (confirm('Hapus item laporan ini?')) {
+                reportsData = reportsData.filter(r => r.id !== id);
+                localStorage.setItem('myelzi_reports', JSON.stringify(reportsData));
+                renderAdminReports();
+                window.showNotice('Laporan berhasil dihapus');
+
+                try {
+                    const withTimeout = (promise, ms = 1500) => Promise.race([
+                        promise,
+                        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
+                    ]);
+                    await withTimeout(deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'miya_reports', id)));
+                } catch (e) {
+                    console.warn("Firestore delete report sync note:", e);
+                }
+            }
+        };]----
+```
+
+```html:Mobile Web App:index.html
+<<<<-[window.deleteCard = async function(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus kartu script ini?')) {
+                try {
+                    // Remove from Firestore
+                    try {
+                        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'miya_cards', id));
+                    } catch (e) {
+                        console.warn("Firestore delete fallback:", e);
+                    }
+                    
+                    // Remove from local memory
+                    cardsData = cardsData.filter(c => c.id !== id);
+                    localStorage.setItem('myelzi_cards', JSON.stringify(cardsData));
+                    
+                    renderCards();
+                    renderSearchCards();
+                    window.showNotice('Kartu berhasil dihapus');
+                } catch (err) {
+                    console.error("Delete error:", err);
+                }
+            }
+        };]----
+>>>>+[window.deleteCard = async function(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus kartu script ini?')) {
+                // Instantly update local UI
+                cardsData = cardsData.filter(c => c.id !== id);
+                localStorage.setItem('myelzi_cards', JSON.stringify(cardsData));
+                
+                renderCards();
+                renderSearchCards();
+                window.showNotice('Kartu berhasil dihapus');
+
+                // Async cloud deletion with auto-timeout
+                try {
+                    const withTimeout = (promise, ms = 1500) => Promise.race([
+                        promise,
+                        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
+                    ]);
+                    await withTimeout(deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'miya_cards', id)));
+                } catch (err) {
+                    console.warn("Firestore delete card note:", err);
+                }
+            }
+        };]----
