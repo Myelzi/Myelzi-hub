@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Myelzi Script Hub</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Fonts: Plus Jakarta Sans & Space Grotesk -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        mono: {
+                            bg: '#050505',
+                            card: '#0f0f12',
+                            cardHover: '#17171c',
+                            surface: '#121215',
+                            border: '#27272a',
+                            borderLight: '#3f3f46',
+                            activePill: '#ffffff',
+                            activeText: '#000000',
+                            inactiveText: '#a1a1aa',
+                            subtext: '#71717a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #050505;
+            color: #f4f4f5;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-panel {
+            background: rgba(15, 15, 18, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-pill {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-subtle {
+            box-shadow: 0 0 25px -5px rgba(255, 255, 255, 0.05);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-24 text-zinc-100 selection:bg-white selection:text-black">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-40 w-full glass-panel border-b border-mono-border">
+        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2.5 cursor-pointer" onclick="window.switchTab('branda')">
+                <div class="w-9 h-9 rounded-xl bg-white text-black font-bold flex items-center justify-center font-display text-lg shadow-lg">
+                    M
+                </div>
+                <div>
+                    <h1 class="font-display font-bold text-base tracking-wide text-white leading-tight">Myelzi <span class="text-zinc-400 font-normal">Hub</span></h1>
+                    <p class="text-[10px] text-zinc-400 font-mono tracking-wider uppercase">Script Collection</p>
+                </div>
+            </div>
+
+            <!-- Dev Panel Button -->
+            <button id="dev-btn" onclick="window.toggleDevModal()" class="px-3 py-1.5 rounded-full bg-mono-surface border border-mono-border hover:border-zinc-500 text-xs font-medium text-zinc-300 flex items-center gap-1.5 transition-all active:scale-95">
+                <i data-lucide="terminal" class="w-3.5 h-3.5 text-zinc-400"></i>
+                <span id="dev-btn-text">Dev Panel</span>
+            </button>
+        </div>
+
+        <!-- STATUS BAR INDICATORS -->
+        <div class="max-w-md mx-auto px-4 pb-2.5 pt-0.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-mono text-zinc-400">
+            <span class="glass-pill px-2.5 py-0.5 rounded-full flex items-center gap-1 whitespace-nowrap border border-white/5">
+                <i data-lucide="globe" class="w-3 h-3 text-zinc-400"></i> ID
+            </span>
+            <span id="badge-device" class="glass-pill px-2.5 py-0.5 rounded-full flex items-center gap-1 whitespace-nowrap border border-white/5">
+                <i data-lucide="smartphone" class="w-3 h-3 text-zinc-400"></i> Mobile
+            </span>
+            <span id="badge-browser" class="glass-pill px-2.5 py-0.5 rounded-full flex items-center gap-1 whitespace-nowrap border border-white/5">
+                <i data-lucide="chrome" class="w-3 h-3 text-zinc-400"></i> Chrome
+            </span>
+            <span class="glass-pill px-2.5 py-0.5 rounded-full flex items-center gap-1 whitespace-nowrap border border-white/5 text-emerald-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Online
+            </span>
+            <span id="badge-battery" class="glass-pill px-2.5 py-0.5 rounded-full flex items-center gap-1 whitespace-nowrap border border-white/5">
+                <i data-lucide="battery" class="w-3 h-3 text-zinc-400"></i> 100%
+            </span>
+            <span id="badge-role" class="glass-pill px-2.5 py-0.5 rounded-full flex items-center gap-1 whitespace-nowrap border border-white/5 text-zinc-300">
+                <i data-lucide="shield-check" class="w-3 h-3 text-zinc-400"></i> User
+            </span>
+        </div>
+    </header>
+
+    <!-- DEV PANEL ACTIVE BAR (VISIBLE WHEN LOGGED IN) -->
+    <div id="dev-active-bar" class="hidden bg-emerald-950/40 border-b border-emerald-500/20 text-emerald-300 text-xs px-4 py-2">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span class="font-mono font-medium">Dev Panel Mode Active</span>
+            </div>
+            <button onclick="window.handleLogoutDev()" class="text-[11px] underline text-emerald-400 hover:text-emerald-200">Logout</button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-md mx-auto px-4 pt-4">
+
+        <!-- TAB: BRANDA -->
+        <section id="tab-branda" class="tab-content space-y-4">
+            <!-- BANNER HERO -->
+            <div class="relative overflow-hidden rounded-2xl glass-panel p-5 border border-mono-border glow-subtle">
+                <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
+                <span class="text-[11px] font-mono tracking-widest text-zinc-400 uppercase bg-white/5 px-2.5 py-1 rounded-full border border-white/10">Official Hub</span>
+                <h2 class="text-xl font-display font-bold mt-3 text-white">Myelzi Script Hub</h2>
+                <p class="text-xs text-zinc-400 mt-1 leading-relaxed">Kumpulan script skin Mobile Legends aman, ringan, dan gratis tanpa password.</p>
+                
+                <div class="mt-4 flex items-center gap-2">
+                    <button onclick="window.switchTab('search')" class="flex-1 py-2 px-3 rounded-xl bg-white text-black font-semibold text-xs flex items-center justify-center gap-2 transition active:scale-95">
+                        <i data-lucide="search" class="w-3.5 h-3.5"></i> Cari Script Skin
+                    </button>
+                    <button onclick="window.switchTab('request')" class="py-2 px-3 rounded-xl bg-mono-surface border border-mono-border text-zinc-300 text-xs hover:bg-zinc-800 transition">
+                        Request
+                    </button>
+                </div>
+            </div>
+
+            <!-- CARDS CONTAINER -->
+            <div id="cards-container" class="space-y-4">
+                <!-- Dynamically rendered -->
+            </div>
+        </section>
+
+        <!-- TAB: SEARCH -->
+        <section id="tab-search" class="tab-content hidden space-y-4">
+            <div class="sticky top-20 z-30 space-y-2.5 pt-1 bg-mono-bg/95 backdrop-blur-md pb-2">
+                <!-- SEARCH INPUT -->
+                <div class="relative">
+                    <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400"></i>
+                    <input type="text" id="search-input" oninput="window.handleSearchInput(this.value)" placeholder="Cari nama skin atau hero..." class="w-full pl-10 pr-9 py-2.5 rounded-xl bg-mono-surface border border-mono-border focus:border-white focus:outline-none text-xs text-white placeholder-zinc-500">
+                    <button id="search-clear-btn" onclick="window.clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white">
+                        <i data-lucide="x-circle" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- CATEGORY CHIPS -->
+                <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+                    <button onclick="window.filterCategory('Semua')" class="chip-btn active-chip px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-white text-black border border-white">Semua Skin</button>
+                    <button onclick="window.filterCategory('Collector')" class="chip-btn px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-mono-surface text-zinc-400 border border-mono-border">Collector</button>
+                    <button onclick="window.filterCategory('Luckybox')" class="chip-btn px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-mono-surface text-zinc-400 border border-mono-border">Luckybox</button>
+                    <button onclick="window.filterCategory('Legend')" class="chip-btn px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-mono-surface text-zinc-400 border border-mono-border">Legend</button>
+                    <button onclick="window.filterCategory('Epic')" class="chip-btn px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-mono-surface text-zinc-400 border border-mono-border">Epic</button>
+                    <button onclick="window.filterCategory('Starlight')" class="chip-btn px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-mono-surface text-zinc-400 border border-mono-border">Starlight</button>
+                </div>
+            </div>
+
+            <div id="search-count" class="text-xs text-zinc-500 font-mono">Menampilkan 0 hasil pencarian</div>
+            
+            <div id="search-cards-container" class="space-y-4">
+                <!-- Search results dynamically rendered -->
+            </div>
+        </section>
+
+        <!-- TAB: ABOUT -->
+        <section id="tab-about" class="tab-content hidden space-y-4">
+            <div class="glass-panel rounded-2xl p-5 border border-mono-border space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-white text-black font-bold flex items-center justify-center font-display text-2xl shadow-xl">
+                        M
+                    </div>
+                    <div>
+                        <h2 class="font-display font-bold text-lg text-white">Myelzi Script Hub</h2>
+                        <p class="text-xs text-zinc-400 font-mono">Version 3.0.0 • Production Build</p>
+                    </div>
+                </div>
+                <p class="text-xs text-zinc-300 leading-relaxed">Platform penyedia script skin Mobile Legends Bang Bang secara gratis, aman dari ban, tanpa password, dan tanpa shortlink berbelit-belit.</p>
+            </div>
+
+            <div class="glass-panel rounded-2xl p-5 border border-mono-border space-y-3">
+                <h3 class="font-display font-semibold text-sm text-white flex items-center gap-2">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> Fitur Utama
+                </h3>
+                <ul class="text-xs text-zinc-400 space-y-2 font-mono">
+                    <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-white"></span> No Password / Direct Sfile Link</li>
+                    <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-white"></span> Fitur Auto Kompres HD Gambar</li>
+                    <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-white"></span> Support All Device & All Graphics</li>
+                    <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-white"></span> Aman Banned & Anti Lag</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- TAB: REQUEST -->
+        <section id="tab-request" class="tab-content hidden space-y-4">
+            <div class="glass-panel rounded-2xl p-5 border border-mono-border space-y-4">
+                <div>
+                    <h2 class="font-display font-bold text-lg text-white flex items-center gap-2">
+                        <i data-lucide="message-square-plus" class="w-5 h-5 text-white"></i> Request Script Skin
+                    </h2>
+                    <p class="text-xs text-zinc-400 mt-0.5">Minta script skin yang belum tersedia di web ini.</p>
+                </div>
+
+                <form id="request-form" onsubmit="window.handleRequestSubmit(event)" class="space-y-3">
+                    <div>
+                        <label class="text-[11px] text-zinc-400 font-medium block mb-1">Nama Hero & Skin</label>
+                        <input type="text" id="req-hero" required placeholder="Contoh: Gusion Collector" class="w-full px-3 py-2 rounded-xl bg-mono-surface border border-mono-border focus:border-white focus:outline-none text-xs text-white">
+                    </div>
+                    <div>
+                        <label class="text-[11px] text-zinc-400 font-medium block mb-1">Catatan Tambahan (Opsional)</label>
+                        <textarea id="req-note" rows="3" placeholder="Sebutkan replace skin yang diinginkan..." class="w-full px-3 py-2 rounded-xl bg-mono-surface border border-mono-border focus:border-white focus:outline-none text-xs text-white"></textarea>
+                    </div>
+                    <button type="submit" id="req-submit-btn" class="w-full py-2.5 rounded-xl bg-white text-black font-semibold text-xs transition active:scale-95">
+                        Kirim Request
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- TAB: REPORT -->
+        <section id="tab-report" class="tab-content hidden space-y-4">
+            <div class="glass-panel rounded-2xl p-5 border border-mono-border space-y-4">
+                <div>
+                    <h2 class="font-display font-bold text-lg text-white flex items-center gap-2 text-rose-400">
+                        <i data-lucide="alert-triangle" class="w-5 h-5"></i> Lapor Link Rusak / Bug
+                    </h2>
+                    <p class="text-xs text-zinc-400 mt-0.5">Laporkan link download mati atau terjadi error pada script.</p>
+                </div>
+
+                <form id="report-form" onsubmit="window.handleReportSubmit(event)" class="space-y-3">
+                    <div>
+                        <label class="text-[11px] text-zinc-400 font-medium block mb-1">Judul Script / Nama Skin</label>
+                        <input type="text" id="rep-script" required placeholder="Contoh: Miya Legend" class="w-full px-3 py-2 rounded-xl bg-mono-surface border border-mono-border focus:border-white focus:outline-none text-xs text-white">
+                    </div>
+                    <div>
+                        <label class="text-[11px] text-zinc-400 font-medium block mb-1">Deskripsi Masalah</label>
+                        <textarea id="rep-desc" required rows="3" placeholder="Jelaskan link mati atau error yang dialami..." class="w-full px-3 py-2 rounded-xl bg-mono-surface border border-mono-border focus:border-white focus:outline-none text-xs text-white"></textarea>
+                    </div>
+                    <button type="submit" id="rep-submit-btn" class="w-full py-2.5 rounded-xl bg-rose-500 text-white font-semibold text-xs transition active:scale-95 hover:bg-rose-600">
+                        Kirim Laporan
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- TAB: DEV PANEL (ADMIN MANAGEMENT) -->
+        <section id="tab-devpanel" class="tab-content hidden space-y-4">
+            <div class="flex items-center justify-between">
+                <h2 class="font-display font-bold text-base text-white">Dev Panel Management</h2>
+                <button onclick="window.openCardModal()" class="px-3 py-1.5 rounded-xl bg-white text-black font-semibold text-xs flex items-center gap-1.5">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Tambah Kartu
+                </button>
+            </div>
+
+            <!-- REQUESTS LIST -->
+            <div class="glass-panel rounded-2xl p-4 border border-mono-border space-y-3">
+                <h3 class="font-display font-semibold text-xs text-zinc-300 uppercase tracking-wider flex items-center gap-2">
+                    <i data-lucide="inbox" class="w-4 h-4 text-zinc-400"></i> Request Masuk
+                </h3>
+                <div id="admin-requests-list" class="space-y-2 text-xs">
+                    <p class="text-zinc-500 font-mono text-[11px]">Belum ada request masuk.</p>
+                </div>
+            </div>
+
+            <!-- REPORTS LIST -->
+            <div class="glass-panel rounded-2xl p-4 border border-mono-border space-y-3">
+                <h3 class="font-display font-semibold text-xs text-rose-400 uppercase tracking-wider flex items-center gap-2">
+                    <i data-lucide="alert-circle" class="w-4 h-4"></i> Laporan Link Rusak
+                </h3>
+                <div id="admin-reports-list" class="space-y-2 text-xs">
+                    <p class="text-zinc-500 font-mono text-[11px]">Belum ada laporan kerusakan.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FLOATING ADD BUTTON FOR DEV -->
+    <button id="floating-add-btn" onclick="window.openCardModal()" class="hidden fixed right-4 bottom-20 z-40 w-12 h-12 rounded-full bg-white text-black shadow-2xl flex items-center justify-center transition active:scale-90">
+        <i data-lucide="plus" class="w-6 h-6"></i>
+    </button>
+
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-mono-bg/90 backdrop-blur-xl border-t border-mono-border">
+        <div class="max-w-md mx-auto grid grid-cols-5 py-2 px-2">
+            <button onclick="window.switchTab('branda')" class="nav-btn active flex flex-col items-center justify-center gap-1 text-white">
+                <div class="nav-pill px-3 py-0.5 rounded-full bg-white/10">
+                    <i data-lucide="home" class="w-4 h-4"></i>
+                </div>
+                <span class="text-[10px] font-medium tracking-tight">Branda</span>
+            </button>
+            <button onclick="window.switchTab('search')" class="nav-btn flex flex-col items-center justify-center gap-1 text-zinc-500">
+                <div class="nav-pill px-3 py-0.5 rounded-full">
+                    <i data-lucide="search" class="w-4 h-4"></i>
+                </div>
+                <span class="text-[10px] font-medium tracking-tight">Search</span>
+            </button>
+            <button onclick="window.switchTab('about')" class="nav-btn flex flex-col items-center justify-center gap-1 text-zinc-500">
+                <div class="nav-pill px-3 py-0.5 rounded-full">
+                    <i data-lucide="info" class="w-4 h-4"></i>
+                </div>
+                <span class="text-[10px] font-medium tracking-tight">About</span>
+            </button>
+            <button onclick="window.switchTab('request')" class="nav-btn flex flex-col items-center justify-center gap-1 text-zinc-500">
+                <div class="nav-pill px-3 py-0.5 rounded-full">
+                    <i data-lucide="message-square-plus" class="w-4 h-4"></i>
+                </div>
+                <span class="text-[10px] font-medium tracking-tight">Request</span>
+            </button>
+            <button onclick="window.switchTab('report')" class="nav-btn flex flex-col items-center justify-center gap-1 text-zinc-500">
+                <div class="nav-pill px-3 py-0.5 rounded-full">
+                    <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                </div>
+                <span class="text-[10px] font-medium tracking-tight">Report</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MODAL: DEV LOGIN -->
+    <div id="dev-login-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="w-full max-w-sm glass-panel rounded-2xl p-5 border border-mono-border space-y-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white">
+                        <i data-lucide="terminal" class="w-4 h-4"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-sm text-white">Dev Panel Access</h3>
+                </div>
+                <button onclick="window.closeDevModal()" class="text-zinc-500 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form onsubmit="window.handleDevLogin(event)" class="space-y-3">
+                <div>
+                    <label class="text-[11px] text-zinc-400 font-medium block mb-1">Developer Passcode</label>
+                    <div class="relative">
+                        <i data-lucide="key-round" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500"></i>
+                        <input type="password" id="dev-passcode" required placeholder="Masukkan passcode..." class="w-full pl-9 pr-3 py-2 rounded-xl bg-mono-surface border border-mono-border focus:border-white focus:outline-none text-xs text-white font-mono">
+                    </div>
+                </div>
+                <button type="submit" class="w-full py-2.5 rounded-xl bg-white text-black font-semibold text-xs transition active:scale-95">
+                    Autentikasi Dev
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD/EDIT CARD -->
+    <div id="card-editor-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+        <div class="w-full max-w-md glass-panel rounded-2xl p-5 border border-mono-border space-y-4 my-8">
+            <div class="flex items-center justify-between">
+                <h3 id="modal-card-title" class="font-display font-bold text-sm text-white">Tambah Kartu Script Baru</h3>
+                <button onclick="window.closeCardModal()" class="text-zinc-500 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="card-form" onsubmit="window.saveCard(event)" class="space-y-3">
+                <input type="hidden" id="card-edit-id" value="">
+                
+                <div>
+                    <label class="text-[11px] text-zinc-400 font-medium block mb-1">1. Judul Utama Kartu</label>
+                    <input type="text" id="card-input-title" required placeholder="Contoh: Miya Legend" class="w-full px-3 py-2 rounded-xl bg-mono-surface border border-mono-border focus:border-white focus:outline-none text-xs text-white">
+                </div>
+
+                <div>
+                    <label class="text-[11px] text-zinc-400 font-medium block mb-1">2. Upload Gambar (Otomatis Dikompres HD)</label>
+                    <input type="file" id="card-input-file" accept="image/*" onchange="window.handleImageSelect(event)" class="w-full text-xs text-zinc-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20">
+                    <div id="image-preview-container" class="hidden mt-2 relative rounded-xl overflow-hidden border border-mono-border h-32">
+                        <img id="image-preview" src="" class="w-full h-full object-cover">
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="text-[11px] text-zinc-400 font-medium">3. Daftar Link & Jenis Skin</label>
+                        <button type="button" onclick="window.addLinkField()" class="text-[11px] text-white flex items-center gap-1 font-medium hover:underline">
+                            + Tambah Link
+                        </button>
+                    </div>
+                    <div id="links-input-container" class="space-y-2">
+                        <!-- Dynamic link inputs -->
+                    </div>
+                </div>
+
+                <button type="submit" id="save-card-submit-btn" class="w-full py-2.5 rounded-xl bg-white text-black font-semibold text-xs transition active:scale-95 flex items-center justify-center gap-2">
+                    Simpan Kartu Script
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast-notice" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 hidden glass-panel px-4 py-2 rounded-full border border-white/20 shadow-2xl text-xs text-white flex items-center gap-2 transition-all duration-300">
+        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+        <span id="toast-msg">Pesan notifikasi</span>
+    </div>
+
+    <!-- FIREBASE & CORE SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummyKeyForFallbackOnly",
+            authDomain: "myelzi-hub.firebaseapp.com",
+            projectId: "myelzi-hub",
+            storageBucket: "myelzi-hub.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const appId = 'myelzi_app_v1';
+
+        // GLOBAL APP STATE
+        let cardsData = [];
+        let requestsData = [];
+        let reportsData = [];
+        let isAdmin = false;
+        let currentCompressedImage = '';
+        let activeTab = 'branda';
+        let selectedCategory = 'Semua';
+        let currentSearchQuery = '';
+
+        // INITIALIZATION
+        window.addEventListener('DOMContentLoaded', async () => {
+            lucide.createIcons();
+            initHeaderBadges();
+            loadLocalStorageData();
+            await fetchCloudData();
+            window.renderCards();
+            window.renderSearchCards();
+        });
+
+        // HEADER BADGES AUTO DETECTION
+        function initHeaderBadges() {
+            // Device
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            const devBadge = document.getElementById('badge-device');
+            if (devBadge) {
+                devBadge.innerHTML = isMobile 
+                    ? `<i data-lucide="smartphone" class="w-3 h-3 text-zinc-400"></i> Mobile`
+                    : `<i data-lucide="monitor" class="w-3 h-3 text-zinc-400"></i> Desktop`;
+            }
+
+            // Browser
+            const ua = navigator.userAgent;
+            let browserName = "Browser";
+            if (ua.includes("Chrome") && !ua.includes("Edg")) browserName = "Chrome";
+            else if (ua.includes("Safari") && !ua.includes("Chrome")) browserName = "Safari";
+            else if (ua.includes("Edg")) browserName = "Edge";
+            else if (ua.includes("Firefox")) browserName = "Firefox";
+
+            const browserBadge = document.getElementById('badge-browser');
+            if (browserBadge) {
+                browserBadge.innerHTML = `<i data-lucide="globe" class="w-3 h-3 text-zinc-400"></i> ${browserName}`;
+            }
+
+            // Battery
+            if ('getBattery' in navigator) {
+                navigator.getBattery().then(battery => {
+                    const updateBattery = () => {
+                        const level = Math.round(battery.level * 100);
+                        const batBadge = document.getElementById('badge-battery');
+                        if (batBadge) {
+                            batBadge.innerHTML = `<i data-lucide="${battery.charging ? 'battery-charging' : 'battery'}" class="w-3 h-3 text-zinc-400"></i> ${level}%`;
+                        }
+                    };
+                    updateBattery();
+                    battery.addEventListener('levelchange', updateBattery);
+                    battery.addEventListener('chargingchange', updateBattery);
+                }).catch(() => {});
+            }
+            lucide.createIcons();
+        }
+
+        // LOAD LOCAL STORAGE DATA CADANGAN
+        function loadLocalStorageData() {
+            const localCards = localStorage.getItem('myelzi_cards');
+            if (localCards) {
+                try { cardsData = JSON.parse(localCards); } catch(e){}
+            } else {
+                cardsData = [
+                    {
+                        id: 'demo-1',
+                        title: 'Minsi Epic',
+                        image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80',
+                        links: [{ name: 'Replace : Collector', url: 'https://sfile.co/demo' }]
+                    }
+                ];
+            }
+
+            const localReqs = localStorage.getItem('myelzi_requests');
+            if (localReqs) {
+                try { requestsData = JSON.parse(localReqs); } catch(e){}
+            }
+
+            const localReps = localStorage.getItem('myelzi_reports');
+            if (localReps) {
+                try { reportsData = JSON.parse(localReps); } catch(e){}
+            }
+        }
+
+        // FETCH DATA CLOUD WITH AUTO TIMEOUT
+        async function fetchCloudData() {
+            const withTimeout = (promise, ms = 1500) => Promise.race([
+                promise,
+                new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
+            ]);
+
+            try {
+                const querySnapshot = await withTimeout(getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'miya_cards')));
+                const cloudCards = [];
+                querySnapshot.forEach((doc) => {
+                    cloudCards.push({ id: doc.id, ...doc.data() });
+                });
+                if (cloudCards.length > 0) {
+                    cardsData = cloudCards;
+                    localStorage.setItem('myelzi_cards', JSON.stringify(cardsData));
+                }
+            } catch (e) {
+                console.warn("Menggunakan data lokal cadangan.");
+            }
+        }
+
+        // SWITCH TAB NAVIGATION
+        window.switchTab = function(tabName) {
+            activeTab = tabName;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            const activeContent = document.getElementById(`tab-${tabName}`);
+            if (activeContent) activeContent.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                const pill = btn.querySelector('.nav-pill');
+                if (pill) pill.classList.remove('bg-white/10');
+                btn.classList.remove('text-white');
+                btn.classList.add('text-zinc-500');
+            });
+
+            const indexMap = { 'branda': 0, 'search': 1, 'about': 2, 'request': 3, 'report': 4, 'devpanel': 0 };
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const targetBtn = navButtons[indexMap[tabName]];
+            if (targetBtn) {
+                targetBtn.classList.remove('text-zinc-500');
+                targetBtn.classList.add('text-white');
+                const pill = targetBtn.querySelector('.nav-pill');
+                if (pill) pill.classList.add('bg-white/10');
+            }
+
+            if (tabName === 'branda') {
+                window.renderCards();
+            } else if (tabName === 'search') {
+                window.renderSearchCards();
+            } else if (tabName === 'devpanel') {
+                renderAdminRequests();
+                renderAdminReports();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // RENDER CARDS DI BRANDA
+        window.renderCards = function() {
+            const container = document.getElementById('cards-container');
+            if (!container) return;
+
+            if (cardsData.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-zinc-500 text-xs font-mono">Belum ada kartu script.</div>`;
+                return;
+            }
+
+            container.innerHTML = cardsData.map(card => createCardHTML(card, 'branda')).join('');
+            lucide.createIcons();
+        };
+
+        // RENDER CARDS DI SEARCH
+        window.renderSearchCards = function() {
+            const container = document.getElementById('search-cards-container');
+            if (!container) return;
+
+            let filtered = cardsData.filter(card => {
+                // SANGAT KETAT: Hanya mencocokkan Judul Utama (card.title)
+                const titleMatch = card.title.toLowerCase().includes(currentSearchQuery.toLowerCase());
+                
+                if (selectedCategory === 'Semua') {
+                    return titleMatch;
+                } else {
+                    const catMatch = card.title.toLowerCase().includes(selectedCategory.toLowerCase());
+                    return titleMatch && catMatch;
+                }
+            });
+
+            const countEl = document.getElementById('search-count');
+            if (countEl) countEl.innerText = `Menampilkan ${filtered.length} hasil pencarian`;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-zinc-500 text-xs font-mono">Tidak ada script yang cocok.</div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(card => createCardHTML(card, 'search')).join('');
+            lucide.createIcons();
+        };
+
+        // CREATE CARD HTML TEMPLATE
+        function createCardHTML(card, prefix) {
+            const linksCount = card.links ? card.links.length : 0;
+            const containerId = `${prefix}-links-container-${card.id}`;
+            const devControls = isAdmin ? `
+                <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5">
+                    <button onclick="window.editCard('${card.id}')" class="w-7 h-7 rounded-full bg-black/60 backdrop-blur-md text-white flex items-center justify-center hover:bg-black">
+                        <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="window.deleteCard('${card.id}')" class="w-7 h-7 rounded-full bg-rose-600/80 backdrop-blur-md text-white flex items-center justify-center hover:bg-rose-600">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            ` : '';
+
+            return `
+                <div class="glass-panel rounded-2xl overflow-hidden border border-mono-border p-3.5 space-y-3 relative group">
+                    <!-- PREVIEW IMAGE WITH NEW BADGE -->
+                    <div class="relative w-full h-48 rounded-xl overflow-hidden bg-zinc-900">
+                        <img src="${card.image || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80'}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                        
+                        <div class="absolute top-3 left-3 z-10">
+                            <span class="glass-pill px-2.5 py-1 rounded-full text-[10px] font-mono font-bold text-white uppercase tracking-wider flex items-center gap-1 border border-white/20">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> NEW
+                            </span>
+                        </div>
+                        ${devControls}
+                    </div>
+
+                    <!-- TITLE & BADGE -->
+                    <div class="text-center space-y-1 pt-1">
+                        <span class="inline-block text-[10px] font-mono text-zinc-400 tracking-widest uppercase bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+                            ✨ SCRIPT MLBB
+                        </span>
+                        <h3 class="font-display font-bold text-lg text-white capitalize tracking-wide">${card.title}</h3>
+                    </div>
+
+                    <!-- DOWNLOAD DROPDOWN BUTTON -->
+                    <div class="bg-mono-surface rounded-xl p-2.5 border border-mono-border">
+                        <button onclick="window.toggleCardLinks('${containerId}')" class="w-full flex items-center justify-between text-left">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-white text-black flex items-center justify-center">
+                                    <i data-lucide="download" class="w-4 h-4"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-xs text-white">Download Di Sini</h4>
+                                    <p class="text-[10px] text-zinc-400 font-mono">${linksCount} Pilihan Skin</p>
+                                </div>
+                            </div>
+                            <div class="px-2.5 py-1 rounded-lg bg-white/10 text-xs font-medium text-zinc-300 flex items-center gap-1">
+                                Pilih <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                            </div>
+                        </button>
+
+                        <!-- LINKS LIST CONTAINER -->
+                        <div id="${containerId}" class="hidden mt-3 pt-2 border-t border-mono-border space-y-2">
+                            ${(card.links || []).map(link => `
+                                <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-2 rounded-lg bg-mono-card hover:bg-mono-cardHover border border-mono-border text-xs transition">
+                                    <div class="flex items-center gap-2 overflow-hidden">
+                                        <i data-lucide="link" class="w-3.5 h-3.5 text-zinc-400 flex-shrink-0"></i>
+                                        <span class="font-medium text-zinc-200 truncate">${link.name}</span>
+                                    </div>
+                                    <i data-lucide="external-link" class="w-3.5 h-3.5 text-zinc-400 flex-shrink-0"></i>
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // TOGGLE DOWNLOAD LINKS DROPDOWN
+        window.toggleCardLinks = function(containerId) {
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.classList.toggle('hidden');
+            }
+        };
+
+        // SEARCH INPUT HANDLER
+        window.handleSearchInput = function(val) {
+            currentSearchQuery = val;
+            const clearBtn = document.getElementById('search-clear-btn');
+            if (clearBtn) {
+                if (val.length > 0) clearBtn.classList.remove('hidden');
+                else clearBtn.classList.add('hidden');
+            }
+            window.renderSearchCards();
+        };
+
+        window.clearSearch = function() {
+            const input = document.getElementById('search-input');
+            if (input) input.value = '';
+            window.handleSearchInput('');
+        };
+
+        window.filterCategory = function(cat) {
+            selectedCategory = cat;
+            document.querySelectorAll('.chip-btn').forEach(btn => {
+                if (btn.innerText.includes(cat)) {
+                    btn.className = "chip-btn active-chip px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-white text-black border border-white";
+                } else {
+                    btn.className = "chip-btn px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-mono-surface text-zinc-400 border border-mono-border";
+                }
+            });
+            window.renderSearchCards();
+        };
+
+        // AUTO COMPRESS IMAGE HD (~800px, 82% quality)
+        window.handleImageSelect = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const maxDim = 800;
+
+                    if (width > height) {
+                        if (width > maxDim) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        }
+                    } else {
+                        if (height > maxDim) {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    currentCompressedImage = canvas.toDataURL('image/jpeg', 0.82);
+                    
+                    const previewContainer = document.getElementById('image-preview-container');
+                    const previewImg = document.getElementById('image-preview');
+                    if (previewContainer && previewImg) {
+                        previewImg.src = currentCompressedImage;
+                        previewContainer.classList.remove('hidden');
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        // CARD MODAL CONTROLS
+        window.openCardModal = function() {
+            document.getElementById('card-edit-id').value = '';
+            document.getElementById('card-input-title').value = '';
+            document.getElementById('card-input-file').value = '';
+            document.getElementById('image-preview-container').classList.add('hidden');
+            currentCompressedImage = '';
+            
+            const linksContainer = document.getElementById('links-input-container');
+            linksContainer.innerHTML = '';
+            window.addLinkField('Default', '');
+
+            document.getElementById('modal-card-title').innerText = 'Tambah Kartu Script Baru';
+            document.getElementById('card-editor-modal').classList.remove('hidden');
+        };
+
+        window.closeCardModal = function() {
+            document.getElementById('card-editor-modal').classList.add('hidden');
+        };
+
+        window.addLinkField = function(name = '', url = '') {
+            const container = document.getElementById('links-input-container');
+            const div = document.createElement('div');
+            div.className = "flex items-center gap-2 link-row";
+            div.innerHTML = `
+                <input type="text" placeholder="Nama Skin / Replace" value="${name}" class="link-name w-1/3 px-3 py-1.5 rounded-lg bg-mono-surface border border-mono-border text-xs text-white">
+                <input type="url" placeholder="Link Sfile / Direct" value="${url}" class="link-url w-2/3 px-3 py-1.5 rounded-lg bg-mono-surface border border-mono-border text-xs text-white">
+                <button type="button" onclick="this.parentElement.remove()" class="text-zinc-500 hover:text-rose-400 p-1">
+                    <i data-lucide="trash" class="w-4 h-4"></i>
+                </button>
+            `;
+            container.appendChild(div);
+            lucide.createIcons();
+        };
+
+        // SAVE CARD WITH AUTO-CLOSE & FAST FALLBACK
+        window.saveCard = async function(event) {
+            event.preventDefault();
+            const submitBtn = document.getElementById('save-card-submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Mengunggah...`;
+            lucide.createIcons();
+
+            const editId = document.getElementById('card-edit-id').value;
+            const title = document.getElementById('card-input-title').value.trim();
+
+            const linkRows = document.querySelectorAll('.link-row');
+            const links = [];
+            linkRows.forEach(row => {
+                const name = row.querySelector('.link-name').value.trim();
+                const url = row.querySelector('.link-url').value.trim();
+                if (name && url) links.push({ name, url });
+            });
+
+            let imageUrl = currentCompressedImage;
+            if (!imageUrl && editId) {
+                const existing = cardsData.find(c => c.id === editId);
+                if (existing) imageUrl = existing.image;
+            }
+            if (!imageUrl) {
+                imageUrl = 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80';
+            }
+
+            const newCardObj = {
+                title: title,
+                image: imageUrl,
+                links: links.length > 0 ? links : [{ name: 'Default', url: '#' }],
+                updatedAt: new Date().toISOString()
+            };
+
+            if (editId) {
+                const index = cardsData.findIndex(c => c.id === editId);
+                if (index >= 0) cardsData[index] = { id: editId, ...newCardObj };
+            } else {
+                const newId = 'card_' + Date.now();
+                cardsData.unshift({ id: newId, ...newCardObj });
+            }
+
+            // SIMPAN LOKAL LANGSUNG
+            localStorage.setItem('myelzi_cards', JSON.stringify(cardsData));
+            window.renderCards();
+            window.renderSearchCards();
+
+            // AUTO CLOSE IMMEDIATELY
+            window.closeCardModal();
+            window.showNotice('Kartu script berhasil disimpan!');
+
+            // SYNC TO FIRESTORE ASYNC (MAX 1.5 S)
+            try {
+                const withTimeout = (promise, ms = 1500) => Promise.race([
+                    promise,
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
+                ]);
+                if (editId) {
+                    await withTimeout(updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'miya_cards', editId), newCardObj));
+                } else {
+                    await withTimeout(addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'miya_cards'), newCardObj));
+                }
+            } catch (e) {
+                console.warn("Firestore sync note:", e);
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `Simpan Kartu Script`;
+        };
+
+        // EDIT CARD
+        window.editCard = function(id) {
+            const card = cardsData.find(c => c.id === id);
+            if (!card) return;
+
+            document.getElementById('card-edit-id').value = card.id;
+            document.getElementById('card-input-title').value = card.title;
+            
+            const previewContainer = document.getElementById('image-preview-container');
+            const previewImg = document.getElementById('image-preview');
+            if (card.image) {
+                previewImg.src = card.image;
+                previewContainer.classList.remove('hidden');
+                currentCompressedImage = card.image;
+            }
+
+            const linksContainer = document.getElementById('links-input-container');
+            linksContainer.innerHTML = '';
+            if (card.links && card.links.length > 0) {
+                card.links.forEach(l => window.addLinkField(l.name, l.url));
+            } else {
+                window.addLinkField('Default', '');
+            }
+
+            document.getElementById('modal-card-title').innerText = 'Edit Kartu Script';
+            document.getElementById('card-editor-modal').classList.remove('hidden');
+        };
+
+        // DELETE CARD INSTANT
+        window.deleteCard = async function(id) {
+            if (confirm('Yakin ingin menghapus kartu script ini?')) {
+                cardsData = cardsData.filter(c => c.id !== id);
+                localStorage.setItem('myelzi_cards', JSON.stringify(cardsData));
+                window.renderCards();
+                window.renderSearchCards();
+                window.showNotice('Kartu berhasil dihapus');
+
+                try {
+                    const withTimeout = (promise, ms = 1500) => Promise.race([
+                        promise,
+                        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
+                    ]);
+                    await withTimeout(deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'miya_cards', id)));
+                } catch (e) {
+                    console.warn("Firestore delete card note:", e);
+                }
+            }
+        };
+
+        // DEV PANEL AUTHENTICATION
+        window.toggleDevModal = function() {
+            if (isAdmin) {
+                window.switchTab('devpanel');
+            } else {
+                document.getElementById('dev-login-modal').classList.remove('hidden');
+            }
+        };
+
+        window.closeDevModal = function() {
+            document.getElementById('dev-login-modal').classList.add('hidden');
+        };
+
+        window.handleDevLogin = function(event) {
+            event.preventDefault();
+            const passcode = document.getElementById('dev-passcode').value;
+            if (passcode === 'admin123' || passcode === 'dev123') {
+                isAdmin = true;
+                document.getElementById('dev-login-modal').classList.add('hidden');
+                document.getElementById('dev-active-bar').classList.remove('hidden');
+                document.getElementById('floating-add-btn').classList.remove('hidden');
+                
+                const roleBadge = document.getElementById('badge-role');
+                if (roleBadge) roleBadge.innerHTML = `<i data-lucide="shield-check" class="w-3 h-3 text-emerald-400"></i> Developer`;
+
+                window.showNotice('Akses Dev Panel Diterima');
+                window.renderCards();
+                window.renderSearchCards();
+                window.switchTab('devpanel');
+            } else {
+                alert('Passcode Dev Salah!');
+            }
+        };
+
+        window.handleLogoutDev = function() {
+            isAdmin = false;
+            document.getElementById('dev-active-bar').classList.add('hidden');
+            document.getElementById('floating-add-btn').classList.add('hidden');
+            const roleBadge = document.getElementById('badge-role');
+            if (roleBadge) roleBadge.innerHTML = `<i data-lucide="shield-check" class="w-3 h-3 text-zinc-400"></i> User`;
+            window.showNotice('Logout Dev Panel');
+            window.renderCards();
+            window.renderSearchCards();
+            window.switchTab('branda');
+        };
+
+        // SUBMIT REQUEST
+        window.handleRequestSubmit = async function(event) {
+            event.preventDefault();
+            const btn = document.getElementById('req-submit-btn');
+            btn.disabled = true;
+            btn.innerText = 'Mengirim...';
+
+            const hero = document.getElementById('req-hero').value.trim();
+            const note = document.getElementById('req-note').value.trim();
+
+            const reqObj = {
+                id: 'req_' + Date.now(),
+                hero: hero,
+                note: note,
+                status: 'Pending',
+                createdAt: new Date().toLocaleDateString('id-ID')
+            };
+
+            requestsData.unshift(reqObj);
+            localStorage.setItem('myelzi_requests', JSON.stringify(requestsData));
+
+            document.getElementById('request-form').reset();
+            btn.disabled = false;
+            btn.innerText = 'Kirim Request';
+            window.showNotice('Request berhasil terkirim!');
+
+            try {
+                const withTimeout = (promise, ms = 1500) => Promise.race([
+                    promise,
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
+                ]);
+                await withTimeout(addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'miya_requests'), reqObj));
+            } catch(e) {
+                console.warn("Firestore req note:", e);
+            }
+        };
+
+        // SUBMIT REPORT
+        window.handleReportSubmit = async function(event) {
+            event.preventDefault();
+            const btn = document.getElementById('rep-submit-btn');
+            btn.disabled = true;
+            btn.innerText = 'Mengirim...';
+
+            const scriptName = document.getElementById('rep-script').value.trim();
+            const desc = document.getElementById('rep-desc').value.trim();
+
+            const repObj = {
+                id: 'rep_' + Date.now(),
+                scriptName: scriptName,
+                desc: desc,
+                status: 'Pending',
+                createdAt: new Date().toLocaleDateString('id-ID')
+            };
+
+            reportsData.unshift(repObj);
+            localStorage.setItem('myelzi_reports', JSON.stringify(reportsData));
+
+            document.getElementById('report-form').reset();
+            btn.disabled = false;
+            btn.innerText = 'Kirim Laporan';
+            window.showNotice('Laporan berhasil terkirim!');
+
+            try {
+                const withTimeout = (promise, ms = 1500) => Promise.race([
+                    promise,
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
+                ]);
+                await withTimeout(addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'miya_reports'), repObj));
+            } catch(e) {
+                console.warn("Firestore rep note:", e);
+            }
+        };
+
+        // ADMIN REQUESTS & REPORTS MANAGEMENT
+        function renderAdminRequests() {
+            const container = document.getElementById('admin-requests-list');
+            if (!container) return;
+            if (requestsData.length === 0) {
+                container.innerHTML = `<p class="text-zinc-500 font-mono text-[11px]">Belum ada request masuk.</p>`;
+                return;
+            }
+            container.innerHTML = requestsData.map(r => `
+                <div class="p-2.5 rounded-xl bg-mono-surface border border-mono-border flex items-center justify-between">
+                    <div>
+                        <div class="font-semibold text-white">${r.hero}</div>
+                        <div class="text-[10px] text-zinc-400 font-mono">${r.note || 'Tanpa catatan'} • ${r.createdAt}</div>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="window.toggleRequestStatus('${r.id}', '${r.status === 'Selesai' ? 'Pending' : 'Selesai'}')" class="px-2 py-1 rounded-lg text-[10px] font-medium ${r.status === 'Selesai' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}">
+                            ${r.status || 'Pending'}
+                        </button>
+                        <button onclick="window.deleteRequestItem('${r.id}')" class="text-zinc-500 hover:text-rose-400 p-1">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderAdminReports() {
+            const container = document.getElementById('admin-reports-list');
+            if (!container) return;
+            if (reportsData.length === 0) {
+                container.innerHTML = `<p class="text-zinc-500 font-mono text-[11px]">Belum ada laporan kerusakan.</p>`;
+                return;
+            }
+            container.innerHTML = reportsData.map(r => `
+                <div class="p-2.5 rounded-xl bg-mono-surface border border-mono-border flex items-center justify-between">
+                    <div>
+                        <div class="font-semibold text-rose-300">${r.scriptName}</div>
+                        <div class="text-[10px] text-zinc-400 font-mono">${r.desc} • ${r.createdAt}</div>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="window.toggleReportStatus('${r.id}', '${r.status === 'Selesai' ? 'Pending' : 'Selesai'}')" class="px-2 py-1 rounded-lg text-[10px] font-medium ${r.status === 'Selesai' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">
+                            ${r.status || 'Pending'}
+                        </button>
+                        <button onclick="window.deleteReportItem('${r.id}')" class="text-zinc-500 hover:text-rose-400 p-1">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        window.toggleRequestStatus = async function(id, status) {
+            const index = requestsData.findIndex(r => r.id === id);
+            if (index >= 0) {
+                requestsData[index].status = status;
+                localStorage.setItem('myelzi_requests', JSON.stringify(requestsData));
+                renderAdminRequests();
+                window.showNotice('Status request diperbarui');
+            }
+
+            try {
+                const withTimeout = (promise, ms = 1500) => Promise.race([
+                    promise,
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
+                ]);
+                await withTimeout(updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'miya_requests', id), { status: status }));
+            } catch (e) {
+                console.warn("Firestore request status sync note:", e);
+            }
+        };
+
+        window.deleteRequestItem = async function(id) {
+            if (confirm('Hapus item request ini?')) {
+                requestsData = requestsData.filter(r => r.id !== id);
+                localStorage.setItem('myelzi_requests', JSON.stringify(requestsData));
+                renderAdminRequests();
+                window.showNotice('Request berhasil dihapus');
+
+                try {
+                    const withTimeout = (promise, ms = 1500) => Promise.race([
+                        promise,
+                        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
+                    ]);
+                    await withTimeout(deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'miya_requests', id)));
+                } catch (e) {
+                    console.warn("Firestore delete request sync note:", e);
+                }
+            }
+        };
+
+        window.toggleReportStatus = async function(id, status) {
+            const index = reportsData.findIndex(r => r.id === id);
+            if (index >= 0) {
+                reportsData[index].status = status;
+                localStorage.setItem('myelzi_reports', JSON.stringify(reportsData));
+                renderAdminReports();
+                window.showNotice('Status laporan diperbarui');
+            }
+
+            try {
+                const withTimeout = (promise, ms = 1500) => Promise.race([
+                    promise,
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
+                ]);
+                await withTimeout(updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'miya_reports', id), { status: status }));
+            } catch (e) {
+                console.warn("Firestore report status sync note:", e);
+            }
+        };
+
+        window.deleteReportItem = async function(id) {
+            if (confirm('Hapus item laporan ini?')) {
+                reportsData = reportsData.filter(r => r.id !== id);
+                localStorage.setItem('myelzi_reports', JSON.stringify(reportsData));
+                renderAdminReports();
+                window.showNotice('Laporan berhasil dihapus');
+
+                try {
+                    const withTimeout = (promise, ms = 1500) => Promise.race([
+                        promise,
+                        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
+                    ]);
+                    await withTimeout(deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'miya_reports', id)));
+                } catch (e) {
+                    console.warn("Firestore delete report sync note:", e);
+                }
+            }
+        };
+
+        // NOTICE TOAST
+        window.showNotice = function(msg) {
+            const toast = document.getElementById('toast-notice');
+            const toastMsg = document.getElementById('toast-msg');
+            if (toast && toastMsg) {
+                toastMsg.innerText = msg;
+                toast.classList.remove('hidden');
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 2500);
+            }
+        };
+    </script>
+</body>
+</html>
